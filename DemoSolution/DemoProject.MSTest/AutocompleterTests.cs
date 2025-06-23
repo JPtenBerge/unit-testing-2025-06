@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Utilities;
 
 namespace DemoProject.MSTest;
 
@@ -10,6 +11,7 @@ namespace DemoProject.MSTest;
 public class AutocompleterTests
 {
     List<Car> _cars = null!;
+    NepNavigateService _nepNavigateService = null!;
 
     [TestInitialize]
     public void Init()
@@ -26,13 +28,14 @@ public class AutocompleterTests
             new() { Make = "Renault", Model = "Megane", YearOfBuild = 2009 },
             new() { Make = "Renault", Model = "Twingo", YearOfBuild = 1998 },
         };
+        _nepNavigateService = new();
     }
 
     [TestMethod]
     public void Autocomplete_BasicQueryThatHandlesMultipleDataTypse_GiveSuggestions()
     {
         // Arrange
-        var sut = new Autocompleter<Car>
+        var sut = new Autocompleter<Car>(_nepNavigateService)
         {
             Query = "g",
             Data = _cars
@@ -49,7 +52,7 @@ public class AutocompleterTests
     //[ExpectedException(typeof(ArgumentException))]
     public void Autocomplete_NoData_Throws()
     {
-        var sut = new Autocompleter<Car>
+        var sut = new Autocompleter<Car>(_nepNavigateService)
         {
             Query = "g",
             Data = null!
@@ -63,12 +66,25 @@ public class AutocompleterTests
     public void Autocomplete_NullInData_IgnoresNullAndGiveSuggestions()
     {
         _cars[2] = null!;
-        var sut = new Autocompleter<Car>
+        var sut = new Autocompleter<Car>(_nepNavigateService)
         {
             Query = "g",
             Data = _cars
         };
         sut.Autocomplete();
         Assert.AreEqual(2, sut.Suggestions!.Count);
+    }
+
+    [TestMethod]
+    public void Next_UsesNavigateService()
+    {
+        var sut = new Autocompleter<Car>(_nepNavigateService)
+        {
+            Query = "g",
+            Data = _cars
+        };
+        sut.Autocomplete();
+        sut.Next();
+        Assert.IsTrue(_nepNavigateService.HasNextBeenCalled);
     }
 }

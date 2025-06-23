@@ -11,6 +11,16 @@ public class Autocompleter<T>
     public required string Query { get; set; }
     public required List<T> Data { get; set; }
     public List<T>? Suggestions { get; set; }
+    public int? ActiveSuggestionIndex { get; set; }
+
+
+    private INavigateService _navigateService;
+
+    public Autocompleter(INavigateService navigateService)
+    {
+        _navigateService = navigateService;
+    }
+
 
     public void Autocomplete()
     {
@@ -38,5 +48,10 @@ public class Autocompleter<T>
                 }
             }
         }
+    }
+
+    public void Next()
+    {
+        _navigateService.Next(Suggestions, ActiveSuggestionIndex);
     }
 }
