@@ -78,3 +78,59 @@ repeat.
   - oud, wordt niet meer onderhouden
 - Microsoft Fakes
   - voor het mocken van static spul als `DateTime.Now` of `File.AppendAllText()`
+
+## Mocken
+
+"er muren in kunnen schuiven" - nepimplementaties in plaats van echte
+
+- dependency injection is een veelgezien pattern om dit te faciliteren
+  - bij het opstarten configureren dat je voor X een Y wil aanleveren
+  - een vorm van inversion of control
+  - interface
+
+test doubles: vergelijkbaar met stunt double
+
+- dummy: een verplchte parameter die niet relevant is voor de test
+  ```cs
+  service.Doe(x, y, bla, hoi);
+  ```
+- fake
+- mock: intelligentie++
+  - nepimplementatie
+  - verschillende returnwaarden
+- stub: registreert interactie
+  - welke methode is aangeroepen
+  - hoe vaak
+  - met welke parameters
+
+## Handmatig mocken
+
+Met een handmatige mock hou ik handmatig bij dat een methode is aangeroepen. Maar ik wil meer:
+
+- exact 1 keer
+- exact 4 keer
+- minimaal 4 keer
+- met welke parameters
+  - met welke parameters de derde aanroep
+- verschillende tests => verschillende returnwaarden
+  - exceptions throwen
+
+## Mock frameworks
+
+Moq:
+```cs
+// Arrange
+var mock = new Mock<INavigateService>();
+mock.Setup(x => x.Next()).Returns(14);
+mock.Setup(x => x.Next()).ReturnsAsync(14);
+mock.Setup(x => x.Next()).Throws<ArgumentException>();
+
+// verderop
+
+// Assert
+mock.Verify(x => x.Next(), Times.Exactly(4));
+```
+
+## Verder
+
+- Bowling kata: https://codingdojo.org/kata/Bowling/
