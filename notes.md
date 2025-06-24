@@ -136,6 +136,75 @@ mock.Setup(x => x.Next()).Throws<ArgumentException>();
 mock.Verify(x => x.Next(), Times.Exactly(4));
 ```
 
+## Code coverage
+
+- in hoeverre je code gedekt wordt door unittests
+- niet zo heel betrouwbaar
+
+soorten coverage:
+- method coverage
+- line coverage
+- statement coverage
+- branch/block coverage
+
+```cs
+public void Doe()
+{
+	var x, y, p = 4; // meerdere statements op 1 regel
+
+	if ( )
+	{
+
+	}
+	for ()
+	{
+
+	}
+}
+```
+
+```cs
+// please don't ever do this. liever transparant zijn dat je project maar 50% CC heeft dan "doen alsof"
+[TestMethod]
+public void DoeTest()
+{
+	try {
+		sut.Doe();
+	}
+	catch {}
+}
+```
+
+## Mutation testing
+
+```cs
+// productiecode
+if (x > 4) {
+	// ...
+}
+
+if (x < 4) { // mutant
+if (x == 4) { // mutant
+if (x > 4000) { // mutant
+if (x == "") { // mutant
+```
+
 ## Verder
 
-- Bowling kata: https://codingdojo.org/kata/Bowling/
+- Bowling kata voor TDD oefenen: https://codingdojo.org/kata/Bowling/
+
+### Visual Studio vs Rider
+
+- Rider is iets meer dan 80% goedkoper dan VS
+- VS is pas sinds de laatste versie 64-bit
+  - 32-bit 2^32 4GB
+  - ReSharper  (JetBrains)
+- VS is slecht in HTML/CSS/JS/TS
+- VS heeft basale ondersteuning voor multiple startup projects
+  - Rider heeft runconfiguraties
+- Rider heeft betere/slimmere autocompletions
+- VS met shift+delete blocking modal dialog "Waiting for a background operation to complete"
+- VS gooit standaard bin/obj niet leeg bij Clean solution
+- VS start losse terminal-schermpjes, Rider integreert ze met tabbladen
+- Rider heeft "Search everywhere" om snel/makkelijk naar bestanden te gaan
+  - shift+shift
