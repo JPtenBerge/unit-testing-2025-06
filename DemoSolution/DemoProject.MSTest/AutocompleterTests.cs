@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Utilities;
+using Moq;
 
 namespace DemoProject.MSTest;
 
@@ -11,7 +12,7 @@ namespace DemoProject.MSTest;
 public class AutocompleterTests
 {
     List<Car> _cars = null!;
-    NepNavigateService _nepNavigateService = null!;
+    Mock<INavigateService> _navigateServiceMock = null!;
 
     [TestInitialize]
     public void Init()
@@ -28,14 +29,18 @@ public class AutocompleterTests
             new() { Make = "Renault", Model = "Megane", YearOfBuild = 2009 },
             new() { Make = "Renault", Model = "Twingo", YearOfBuild = 1998 },
         };
-        _nepNavigateService = new();
+
+        _navigateServiceMock = new Mock<INavigateService>();
+        _navigateServiceMock.Setup(x => x.Next(It.IsAny<List<Car>>(), It.IsAny<int?>())).Returns(4);
     }
 
     [TestMethod]
     public void Autocomplete_BasicQueryThatHandlesMultipleDataTypse_GiveSuggestions()
     {
+        _navigateServiceMock.Setup(x => x.Next(It.IsAny<List<Car>>(), It.IsAny<int?>())).Returns(42);
+
         // Arrange
-        var sut = new Autocompleter<Car>(_nepNavigateService)
+        var sut = new Autocompleter<Car>(_navigateServiceMock.Object)
         {
             Query = "g",
             Data = _cars
@@ -52,7 +57,7 @@ public class AutocompleterTests
     //[ExpectedException(typeof(ArgumentException))]
     public void Autocomplete_NoData_Throws()
     {
-        var sut = new Autocompleter<Car>(_nepNavigateService)
+        var sut = new Autocompleter<Car>(_navigateServiceMock.Object)
         {
             Query = "g",
             Data = null!
@@ -66,7 +71,7 @@ public class AutocompleterTests
     public void Autocomplete_NullInData_IgnoresNullAndGiveSuggestions()
     {
         _cars[2] = null!;
-        var sut = new Autocompleter<Car>(_nepNavigateService)
+        var sut = new Autocompleter<Car>(_navigateServiceMock.Object)
         {
             Query = "g",
             Data = _cars
@@ -78,13 +83,15 @@ public class AutocompleterTests
     [TestMethod]
     public void Next_UsesNavigateService()
     {
-        var sut = new Autocompleter<Car>(_nepNavigateService)
+        var sut = new Autocompleter<Car>(_navigateServiceMock.Object)
         {
             Query = "g",
             Data = _cars
         };
         sut.Autocomplete();
         sut.Next();
-        Assert.IsTrue(_nepNavigateService.HasNextBeenCalled);
+
+        //_navigateServiceMock.Verify(x => x.Next(It.IsAny<List<Car>>(), It.IsAny<int?>()), Times.AtLeast(2));
+        _navigateServiceMock.Verify(x => x.Next(It.IsAny<List<Car>>(), null), Times.Once);
     }
 }

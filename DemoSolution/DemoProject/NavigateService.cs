@@ -8,8 +8,8 @@ namespace DemoProject;
 
 public class NavigateService : INavigateService
 {
-    public void Next<T>(List<T> data, int? currentActiveIndex)
+    public int Next<T>(List<T> data, int? currentActiveIndex)
     {
-
+        return 42;
     }
 }

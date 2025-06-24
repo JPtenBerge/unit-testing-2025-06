@@ -10,10 +10,10 @@ namespace DemoProject.MSTest
     {
         public bool HasNextBeenCalled { get; set; }
 
-        public void Next<T>(List<T> data, int? currentActiveIndex)
+        public int Next<T>(List<T> data, int? currentActiveIndex)
         {
             HasNextBeenCalled = true;
-            //return 14;
+            return 14;
         }
     }
 }
