@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DemoProject.MSTest
 {
@@ -68,10 +69,19 @@ namespace DemoProject.MSTest
 
             // Assert - toetsen
             Assert.AreEqual(number * anotherNumber, _sut.Result);
+        }
 
+        [DataTestMethod]
+        [DataRow(2, 4, 6, 12)]
+        [DataRow(-2, -4, -6, -12)]
+        [DataRow(-2, 4, -6, -4)]
+        public void MyTestMethod(int p1, int p2, int p3, int expectedResult)
+        {
+            _sut.Add(p1);
+            _sut.Add(p2);
+            _sut.Add(p3);
 
-
-            
+            Assert.AreEqual(expectedResult, _sut.Result);
         }
     }
 }
