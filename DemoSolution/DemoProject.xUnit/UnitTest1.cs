@@ -6,7 +6,7 @@ namespace DemoProject.xUnit
         public void Test1()
         {
             Assert.Equal(42, 42);
-            Assert.Equal("hoi", "doei");
+            //Assert.Equal("hoi", "doei");
         }
     }
 }

@@ -13,7 +13,7 @@ namespace DemoProject.MSTest
         public void Next<T>(List<T> data, int? currentActiveIndex)
         {
             HasNextBeenCalled = true;
-            return 14;
+            //return 14;
         }
     }
 }
