@@ -1,4 +1,8 @@
-﻿namespace Implementation.UnitTest;
+﻿using Implementation.Repository;
+using Implementation.Service;
+using Moq;
+
+namespace Implementation.UnitTest;
 
 public class ShoppingCartTests
 {
@@ -56,15 +60,19 @@ public class ShoppingCartTests
     [Fact]
     public void Checkout_SufficientBalance_AddsToPaymentHistory()
     {
-        var userRepository = new FakeUserRepository();
-        var bankingService = new FakeBankingService();
+        var userRepositoryMock = new Mock<IUserRepository>();
+        var bankingServiceMock = new Mock<IBankingService>();
         var frank = new User("Frank", new DateTime(2010, 1, 1), "1234");
-        userRepository.UsersByUsername["frank"] = frank;
-        bankingService.Balances["1234"] = 1000;
-        var sut = new ShoppingCart("frank", userRepository, bankingService);
+
+        userRepositoryMock.Setup(x => x.GetUser(It.IsAny<string>())).Returns(frank);
+        bankingServiceMock.Setup(x => x.GetBalance(It.IsAny<string>())).Returns(1000);
+
+        var sut = new ShoppingCart("frank", userRepositoryMock.Object, bankingServiceMock.Object);
         sut.Add(_xbox, 1);
         sut.CheckOut();
-        Assert.Single(userRepository.PaymentHistory, ("Frank", 199.99m));
+
+        bankingServiceMock.Verify(x => x.MakePayment(It.IsAny<string>(), It.IsAny<decimal>()));
+        userRepositoryMock.Verify(x => x.AddPaymentHistory("Frank", 199.99m));
     }
 
 
