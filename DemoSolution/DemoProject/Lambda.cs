@@ -15,7 +15,7 @@ class Lambda
         Func<string, bool> action = delegate (string name)
         {
             return true;
-        }
+        };
         
         // bovenstaand kan ook worden vertaald naar:
         // Func<string, bool> action = name => true;
