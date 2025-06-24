@@ -45,6 +45,11 @@ zou je dit moeten testen?
 Maar, verschillen?
 - beetje syntax
 - ooit best wat. tegenwoordig _nauwelijks_.
+- xUnit-pagina met verschillen in tabel: https://xunit.net/docs/comparisons
+  - Met name die `[TestInitialize]` is een interessante, waar xUnit daar de constructor gebruikt
+    - met een groot aantal tests kun je dan geen expliciete `override` doen op je base-initialisatie
+    - ook `await` in je initializer gebruiken kan dan niet, want een constructor kun je niet als `async` definieren
+    - zie ook de niet-geaccepteerde maar wel waardevolle antwoorden hier: https://stackoverflow.com/questions/334515/do-you-use-testinitialize-or-the-test-class-constructor-to-prepare-each-test-an
 
 ## Testen identificeren
 
